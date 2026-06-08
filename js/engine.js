@@ -222,4 +222,4 @@ function transitionToZone(zone) {
 }
 
 // --- SUMMARY ---
-The code has been updated to include new enemies for the 'Cursed Forest' zone, a new enemy pool that replaces the 'Inquisitor Scout' after 100 total kills, featuring higher HP and specialized drops. Additionally, functions have been added to handle enemy spawning based on the current zone and transitioning between zones.
+// The code has been updated to include new enemies for the 'Cursed Forest' zone, a new enemy pool that replaces the 'Inquisitor Scout' after 100 total kills, featuring higher HP and specialized drops. Additionally, functions have been added to handle enemy spawning based on the current zone and transitioning between zones.
