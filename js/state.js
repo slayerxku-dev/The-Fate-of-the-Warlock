@@ -9,7 +9,9 @@ const state = {
         knowledge: 0,
         imps: 0,
         witchsBrewTimer: 0,
-        prestigeMultiplier: 1.0
+        prestigeMultiplier: 1.0,
+        potions: { haste: 0, might: 0 },
+        potionTimers: { haste: 0, might: 0 }
     },
     skills: {
         darkArts: { xp: 0, level: 1, name: "Dark Arts" },

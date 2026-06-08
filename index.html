@@ -50,6 +50,7 @@
                 
                 <div class="menu-label">THE WORLD</div>
                 <button class="nav-btn" onclick="showTab('combat')">Combat (Wilderness)</button>
+                <button class="nav-btn" onclick="showTab('shop')">The Black Market</button>
                 <button class="nav-btn" onclick="showTab('grimoire')">The Grimoire</button>
                 <button class="nav-btn" onclick="showTab('inventory')">Inventory & Gear</button>
             </nav>
@@ -156,10 +157,36 @@
                         <p>HP: <span id="enemy-hp">50</span>/<span id="enemy-max-hp">50</span></p>
                         <p>Damage: <span id="enemy-damage">5</span></p>
                         <p>Kills: <span id="combat-kills">0</span></p>
+                        <p>Scaling: <span id="enemy-scaling">1.0</span>x</p>
                     </div>
                 </div>
                 <div class="combat-controls">
                     <button class="action-btn" id="btn-combat" onclick="toggleCombat()">Venture into Wilderness</button>
+                </div>
+            </section>
+
+            <section id="shop" class="tab-content">
+                <div class="action-grid">
+                    <div class="action-card">
+                        <h3>Potion of Haste</h3>
+                        <p>Reduces task duration by 20% for 5 minutes.</p>
+                        <div class="reward-line">Cost: 200 Gold</div>
+                        <div class="potion-controls">
+                            <button class="action-btn" onclick="buyPotion('haste', 200)">Buy</button>
+                            <button class="action-btn" onclick="usePotion('haste')">Use (<span id="haste-count">0</span>)</button>
+                        </div>
+                        <small>Active: <span id="haste-timer">Off</span></small>
+                    </div>
+                    <div class="action-card">
+                        <h3>Potion of Might</h3>
+                        <p>Increases combat damage by 20% for 5 minutes.</p>
+                        <div class="reward-line">Cost: 250 Gold</div>
+                        <div class="potion-controls">
+                            <button class="action-btn" onclick="buyPotion('might', 250)">Buy</button>
+                            <button class="action-btn" onclick="usePotion('might')">Use (<span id="might-count">0</span>)</button>
+                        </div>
+                        <small>Active: <span id="might-timer">Off</span></small>
+                    </div>
                 </div>
             </section>
 

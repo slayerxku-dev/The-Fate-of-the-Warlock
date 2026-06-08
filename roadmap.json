@@ -1,0 +1,351 @@
+{
+    "pending_tasks": [],
+    "completed_tasks": [
+        {
+            "id": "TASK-001",
+            "description": "Add a 'Witch's Brew' task to the Alchemy skill that requires Souls and Gold to produce a temporary Mana Regen buff.",
+            "priority": "medium"
+        },
+        {
+            "id": "TASK-002",
+            "description": "Implement a basic 'Prestige' mechanic called 'Ritual of Rebirth' that resets progress for a permanent multiplier to Mana Gain.",
+            "priority": "high"
+        },
+        {
+            "id": "TASK-003",
+            "description": "Implement Mastery Efficiency: In gameTick(), calculate 'masterySpeedBonus' as 1 + (state.mastery[state.activeTask] - 1) * 0.01. Cap this bonus at 1.5 (50% speed increase). Multiply the final taskSpeedMultiplier by this value before calculating progressPerMs.",
+            "priority": "medium"
+        },
+        {
+            "id": "TASK-013",
+            "description": "Architectural Refactor: Split 'game.js' into modular files: js/state.js, js/tasks.js, js/engine.js, and js/ui.js. Update index.html to load them. This is required to reduce file size for better AI reliability.",
+            "priority": "high"
+        },
+        {
+            "id": "TASK-004",
+            "description": "Add 'The Black Market' shop: 1. Add 'potions' object to state.resources to track quantities. 2. Create a 'Shop' tab in index.html. 3. Implement buyPotion(type, cost) function. 4. Potions: 'Haste' (reduces task duration by 20% for 5 mins) and 'Might' (+20% combat damage for 5 mins). 5. Update gameTick to decrement active potion timers and apply bonuses.",
+            "priority": "high",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-005",
+            "description": "Introduce 'Blood Magic': 1. Add 'blood' to state.resources. 2. In gameTick combat victory, grant 1-3 blood. 3. Add 'hemomancy' to state.skills. 4. Add 'Blood Siphon' task: 4s duration, costs 10 HP, grants 5 Blood and Hemomancy XP. 5. Ensure UI updates to show Blood and Hemomancy level.",
+            "priority": "medium",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-006",
+            "description": "Implement Enemy Scaling: 1. Define 'scalingFactor' as Math.floor(state.combat.killCount / 10). 2. Modify combat logic to multiply enemy HP and Damage by (1 + scalingFactor * 0.1). 3. Apply the same multiplier to COMBAT_GOLD_REWARD and COMBAT_XP_REWARD to keep rewards scaling with difficulty.",
+            "priority": "high",
+            "files": [
+                "js/engine.js",
+                "js/ui.js"
+            ]
+        },
+        {
+            "id": "TASK-007",
+            "description": "Add Skill Milestones: In gainXP(), add logic to check if a skill just reached level 10, 25, or 50. Milestone Bonuses: Dark Arts Lv10 (+20 Max Mana), Soul Reaping Lv10 (+1 Soul per harvest), Alchemy Lv10 (Transmute gives +20% Gold). Log a unique message when a milestone is reached.",
+            "priority": "medium",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-008",
+            "description": "Create an 'Offline Progress' Modal: 1. Add a hidden overlay div in index.html. 2. In loadGame(), capture resource counts before gameTick(offlineTimeElapsed). 3. Compare 'before' and 'after' counts. 4. Update the modal with the differences and make it visible to the player on load.",
+            "priority": "low",
+            "file": "js/ui.js"
+        },
+        {
+            "id": "TASK-009",
+            "description": "Implement 'Equipment Salvaging': 1. Update the inventory UI to include a 'Salvage' button for each item. 2. Create salvageItem(itemId) function. 3. Salvaging a Wand gives 1 Knowledge; salvaging a Grimoire gives 50 Gold. 4. Ensure equipped items cannot be salvaged.",
+            "priority": "medium",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-010",
+            "description": "Add 'Zone' Progression: 1. Create a ZONES_DATA object with 'Wilderness', 'Cursed Forest' (requires 50 kills), and 'Crypt' (requires 150 kills). 2. Add 'currentZone' to state.combat. 3. Update combat logic to pull enemy stats and names from the current zone object. 4. Add UI buttons to switch between unlocked zones.",
+            "priority": "high",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-011",
+            "description": "Implement 'Auto-Eat' Logic: Create a toggle in the UI that automatically uses a Health Potion if the player falls below 20% HP during combat.",
+            "priority": "medium",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-012",
+            "description": "Add 'Save Export/Import': Provide a text-based save string system so players can backup or transfer their progress manually.",
+            "priority": "low",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-014",
+            "description": "Mechanic: Implement 'Mana Crystals'. Add a rare chance (2%) for Shadow Bolt Training to grant a Mana Crystal. Each crystal increases Max Mana by 5.",
+            "priority": "medium",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-015",
+            "description": "UI: Implement a 'Toast' notification system. Create a function in ui.js to show temporary non-intrusive popups for milestones like level-ups or rare item drops.",
+            "priority": "low",
+            "file": "js/ui.js"
+        },
+        {
+            "id": "TASK-016",
+            "description": "Mechanic: Add 'Soul Forging'. Create a new tab and logic to spend Souls and Knowledge to upgrade the 'Basic Wand' into an 'Acolyte Rod' (+5 damage).",
+            "priority": "medium",
+            "files": [
+                "js/engine.js",
+                "js/ui.js",
+                "index.html"
+            ]
+        },
+        {
+            "id": "TASK-017",
+            "description": "Content: Add 'Cursed Forest' enemies. Define a new enemy pool that replaces the Inquisitor Scout after 100 total kills, featuring higher HP and specialized drops.",
+            "priority": "medium",
+            "file": "js/engine.js"
+        }
+    ],
+    "future_tasks": [
+        {
+            "id": "TASK-018",
+            "description": "Visuals: Add CSS pulsing animations to the Mana bar when it is full or regenerating at high speeds.",
+            "priority": "low",
+            "file": "index.html"
+        },
+        {
+            "id": "TASK-019",
+            "description": "Mechanic: Implement 'Imp Research'. While Imps are active, they have a small chance to generate 1 Knowledge point every 60 seconds.",
+            "priority": "medium",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-020",
+            "description": "UI: Add a 'Statistics' tab. Track and display lifetime Gold earned, total Souls harvested, and total enemies defeated.",
+            "priority": "low",
+            "files": [
+                "js/state.js",
+                "js/ui.js",
+                "index.html"
+            ]
+        },
+        {
+            "id": "TASK-021",
+            "description": "Mechanic: Add 'Blood Tithe'. An action in the Hemomancy tab that converts 20% of current HP directly into a burst of Gold.",
+            "priority": "medium",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-022",
+            "description": "Content: Add 'Warlock Apprentice' mini-boss. Appears every 50 kills. Has 5x HP but drops a guaranteed 'Ethereal Thread' used for crafting.",
+            "priority": "high",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-023",
+            "description": "UI: Add tooltips to all action cards. Hovering over 'Begin' should show a breakdown of current speed and reward multipliers.",
+            "priority": "low",
+            "file": "js/ui.js"
+        },
+        {
+            "id": "TASK-024",
+            "description": "Mechanic: Implement 'Necromancy' skill. New skill tree that allows raising Skeletons from Souls to assist in combat (adds flat DPS).",
+            "priority": "high",
+            "files": [
+                "js/state.js",
+                "js/engine.js",
+                "js/ui.js"
+            ]
+        },
+        {
+            "id": "TASK-025",
+            "description": "Visuals: Implement SVG icons for Mana, Souls, and Gold in the sidebar to replace plain text labels.",
+            "priority": "low",
+            "file": "index.html"
+        },
+        {
+            "id": "TASK-026",
+            "description": "Mechanic: Add 'Alchemy Transmutation'. Allow players to convert 500 Gold into 1 Knowledge point once every 10 minutes.",
+            "priority": "medium",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-027",
+            "description": "Content: Add 'Soul Jar' item. Rare drop from enemies that increases the Soul storage cap by 50.",
+            "priority": "medium",
+            "file": "js/state.js"
+        },
+        {
+            "id": "TASK-028",
+            "description": "UI: Implement a 'Compact Mode' for the sidebar. A toggle that minimizes the sidebar to icons only for more screen real estate.",
+            "priority": "low",
+            "file": "js/ui.js"
+        },
+        {
+            "id": "TASK-029",
+            "description": "Mechanic: Add 'Chronomancy' skill. A late-game skill that provides a flat 1% reduction in task duration per level.",
+            "priority": "high",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-030",
+            "description": "Visuals: Add a 'Screen Shake' effect when the player takes damage in combat.",
+            "priority": "low",
+            "file": "js/ui.js"
+        },
+        {
+            "id": "TASK-031",
+            "description": "Content: Add 'Forbidden Library' zone. Requires 500 total kills to unlock. Enemies here drop Knowledge instead of Gold.",
+            "priority": "high",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-032",
+            "description": "UI: Add progress bars to the 'Active Buffs' section for Potion and Witch's Brew durations.",
+            "priority": "medium",
+            "file": "js/ui.js"
+        },
+        {
+            "id": "TASK-033",
+            "description": "Mechanic: Implement 'Soul Shield'. A passive ability where souls act as a secondary health bar (1 soul absorbs 5 damage).",
+            "priority": "medium",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-034",
+            "description": "Visuals: Add 'Floating Text' numbers that drift upward when Gold or XP is gained.",
+            "priority": "low",
+            "file": "js/ui.js"
+        },
+        {
+            "id": "TASK-035",
+            "description": "Content: Add 'Shadow Merchant'. A rare tab that appears only when the player has more than 1000 Gold, offering legendary items.",
+            "priority": "medium",
+            "files": [
+                "js/engine.js",
+                "index.html"
+            ]
+        },
+        {
+            "id": "TASK-036",
+            "description": "UI: Add a 'Prestige Forecast' in the Grimoire tab. Show exactly what the new multiplier will be before the player clicks 'Ritual'.",
+            "priority": "low",
+            "file": "js/ui.js"
+        },
+        {
+            "id": "TASK-037",
+            "description": "Mechanic: Add 'Mana Burn'. A combat toggle that doubles damage but costs 5 Mana per combat tick.",
+            "priority": "medium",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-038",
+            "description": "Visuals: Implement smooth transitions (fade-in/out) when switching between tabs.",
+            "priority": "low",
+            "file": "index.html"
+        },
+        {
+            "id": "TASK-039",
+            "description": "Content: Add 'Ancient Grimoire' equipment. A high-tier grimoire that increases Mana Regen and task speed significantly.",
+            "priority": "medium",
+            "file": "js/state.js"
+        },
+        {
+            "id": "TASK-040",
+            "description": "UI: Add 'Filter' buttons to the Game Log to show only Combat, only Resources, or All.",
+            "priority": "low",
+            "file": "js/ui.js"
+        },
+        {
+            "id": "TASK-041",
+            "description": "Mechanic: Implement 'Spirit Binding'. An upgrade that doubles the Soul generation rate of Imps.",
+            "priority": "medium",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-042",
+            "description": "Visuals: Change the color of skill progress bars to match their theme (e.g., Purple for Dark Arts, Green for Alchemy).",
+            "priority": "low",
+            "file": "index.html"
+        },
+        {
+            "id": "TASK-043",
+            "description": "Content: Add 'Void Kraken' world boss. A massive encounter that requires multiple skills at Lv.50 to defeat.",
+            "priority": "high",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-044",
+            "description": "UI: Add 'Keyboard Shortcuts'. Numbers 1-5 switch tabs, Spacebar toggles the current active task.",
+            "priority": "low",
+            "file": "js/ui.js"
+        },
+        {
+            "id": "TASK-045",
+            "description": "Mechanic: Add 'Astronomy' skill. Increases Mana Regen during the night (based on real-world system time or a game clock).",
+            "priority": "medium",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-046",
+            "description": "Visuals: Add a 'Glow' effect to buttons when a player has enough resources to perform the action.",
+            "priority": "low",
+            "file": "index.html"
+        },
+        {
+            "id": "TASK-047",
+            "description": "Content: Add 'Inquisitor Captain'. A high-damage enemy that appears in later zones.",
+            "priority": "medium",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-048",
+            "description": "UI: Add a small health bar for the player in the sidebar next to the Mana bar.",
+            "priority": "medium",
+            "file": "index.html"
+        },
+        {
+            "id": "TASK-049",
+            "description": "Mechanic: Implement 'Demonic Pact'. High-risk tasks that grant massive rewards but have a chance to fail and damage the player.",
+            "priority": "high",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-050",
+            "description": "Visuals: Implement a loading spinner that displays while the game state is being restored from localStorage.",
+            "priority": "low",
+            "file": "index.html"
+        },
+        {
+            "id": "TASK-051",
+            "description": "Visuals: Create a 'Void Particle System' using HTML5 Canvas to act as a dynamic background for the sidebar.",
+            "priority": "high",
+            "file": "index.html"
+        },
+        {
+            "id": "TASK-052",
+            "description": "Visuals: Add 'Glassmorphism' styling to all action cards (semi-transparent backgrounds with blur).",
+            "priority": "medium",
+            "file": "index.html"
+        },
+        {
+            "id": "TASK-053",
+            "description": "Visuals: Add a 'Glitch' text effect to the header title that triggers randomly when Mana is below 10%.",
+            "priority": "low",
+            "file": "index.html"
+        },
+        {
+            "id": "TASK-054",
+            "description": "Visuals: Implement dynamic 'Aura' effects around the player's HP bar based on active potions (Red for Might, Cyan for Haste).",
+            "priority": "medium",
+            "file": "js/ui.js"
+        },
+        {
+            "id": "TASK-055",
+            "description": "Visuals: Add custom CSS cursors (a stylized magic wand or claw) that change based on the active tab.",
+            "priority": "low",
+            "file": "index.html"
+        }
+    ]
+}
