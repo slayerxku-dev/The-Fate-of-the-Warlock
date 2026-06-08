@@ -1,0 +1,73 @@
+{
+    "pending_tasks": [
+    ],
+    "completed_tasks": [
+        {
+            "id": "TASK-001",
+            "description": "Add a 'Witch's Brew' task to the Alchemy skill that requires Souls and Gold to produce a temporary Mana Regen buff.",
+            "priority": "medium"
+        },
+        {
+            "id": "TASK-002",
+            "description": "Implement a basic 'Prestige' mechanic called 'Ritual of Rebirth' that resets progress for a permanent multiplier to Mana Gain.",
+            "priority": "high"
+        },
+        {
+            "id": "TASK-003",
+            "description": "Implement Mastery Efficiency: In gameTick(), calculate 'masterySpeedBonus' as 1 + (state.mastery[state.activeTask] - 1) * 0.01. Cap this bonus at 1.5 (50% speed increase). Multiply the final taskSpeedMultiplier by this value before calculating progressPerMs.",
+            "priority": "medium"
+        },
+        {
+            "id": "TASK-013",
+            "description": "Architectural Refactor: Split 'game.js' into modular files: js/state.js, js/tasks.js, js/engine.js, and js/ui.js. Update index.html to load them. This is required to reduce file size for better AI reliability.",
+            "priority": "high"
+        }
+    ],
+    "future_tasks": [
+        {
+            "id": "TASK-004",
+            "description": "Add 'The Black Market' shop: 1. Add 'potions' object to state.resources to track quantities. 2. Create a 'Shop' tab in index.html. 3. Implement buyPotion(type, cost) function. 4. Potions: 'Haste' (reduces task duration by 20% for 5 mins) and 'Might' (+20% combat damage for 5 mins). 5. Update gameTick to decrement active potion timers and apply bonuses.",
+            "priority": "high"
+        },
+        {
+            "id": "TASK-005",
+            "description": "Introduce 'Blood Magic': 1. Add 'blood' to state.resources. 2. In gameTick combat victory, grant 1-3 blood. 3. Add 'hemomancy' to state.skills. 4. Add 'Blood Siphon' task: 4s duration, costs 10 HP, grants 5 Blood and Hemomancy XP. 5. Ensure UI updates to show Blood and Hemomancy level.",
+            "priority": "medium"
+        },
+        {
+            "id": "TASK-006",
+            "description": "Implement Enemy Scaling: 1. Define 'scalingFactor' as Math.floor(state.combat.killCount / 10). 2. Modify combat logic to multiply enemy HP and Damage by (1 + scalingFactor * 0.1). 3. Apply the same multiplier to COMBAT_GOLD_REWARD and COMBAT_XP_REWARD to keep rewards scaling with difficulty.",
+            "priority": "high"
+        },
+        {
+            "id": "TASK-007",
+            "description": "Add Skill Milestones: In gainXP(), add logic to check if a skill just reached level 10, 25, or 50. Milestone Bonuses: Dark Arts Lv10 (+20 Max Mana), Soul Reaping Lv10 (+1 Soul per harvest), Alchemy Lv10 (Transmute gives +20% Gold). Log a unique message when a milestone is reached.",
+            "priority": "medium"
+        },
+        {
+            "id": "TASK-008",
+            "description": "Create an 'Offline Progress' Modal: 1. Add a hidden overlay div in index.html. 2. In loadGame(), capture resource counts before gameTick(offlineTimeElapsed). 3. Compare 'before' and 'after' counts. 4. Update the modal with the differences and make it visible to the player on load.",
+            "priority": "low"
+        },
+        {
+            "id": "TASK-009",
+            "description": "Implement 'Equipment Salvaging': 1. Update the inventory UI to include a 'Salvage' button for each item. 2. Create salvageItem(itemId) function. 3. Salvaging a Wand gives 1 Knowledge; salvaging a Grimoire gives 50 Gold. 4. Ensure equipped items cannot be salvaged.",
+            "priority": "medium"
+        },
+        {
+            "id": "TASK-010",
+            "description": "Add 'Zone' Progression: 1. Create a ZONES_DATA object with 'Wilderness', 'Cursed Forest' (requires 50 kills), and 'Crypt' (requires 150 kills). 2. Add 'currentZone' to state.combat. 3. Update combat logic to pull enemy stats and names from the current zone object. 4. Add UI buttons to switch between unlocked zones.",
+            "priority": "high"
+        },
+        {
+            "id": "TASK-011",
+            "description": "Implement 'Auto-Eat' Logic: Create a toggle in the UI that automatically uses a Health Potion if the player falls below 20% HP during combat.",
+            "priority": "medium"
+        },
+        {
+            "id": "TASK-012",
+            "description": "Add 'Save Export/Import': Provide a text-based save string system so players can backup or transfer their progress manually.",
+            "priority": "low"
+        }
+    ]
+}

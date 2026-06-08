@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Fate of the Warlock | Alpha v0.9</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="game-container">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <div class="orb"></div>
+                <h2>Warlock <span class="version">v0.9</span></h2>
+            </div>
+            
+            <div class="stat-box">
+                <div class="res-container">
+                    <div class="res"><span class="label">Mana</span> <span id="mana-count" class="val">0</span>/<span id="max-mana">100</span></div>
+                    <div class="res-sub-label">Regen: <span id="mana-regen-rate">0</span>/s</div>
+                    <div class="mana-bar-outer"><div id="mana-bar-fill"></div></div>
+                </div>
+                <div class="res"><span class="label">Souls</span> <span id="soul-count" class="val">0</span></div>
+                <div class="res"><span class="label">Gold</span> <span id="gold-count" class="val">0</span></div>
+                <div class="res knowledge"><span class="label">Knowledge</span> <span id="knowledge-count" class="val">0</span></div>
+            </div>
+            <nav id="menu">
+                <div class="menu-label">SKILLS</div>
+                <div class="skill-nav-item active" id="nav-dark-arts">
+                    <button onclick="showTab('dark-arts')">Dark Arts</button>
+                    <div class="skill-mini-bar"><div id="darkArts-mini-progress"></div></div>
+                    <small>Lv. <span id="darkArts-lv">1</span></small>
+                </div>
+                <div class="skill-nav-item">
+                    <button onclick="showTab('soul-reaping')">Soul Reaping</button>
+                    <div class="skill-mini-bar"><div id="soulReaping-mini-progress"></div></div>
+                    <small>Lv. <span id="soulReaping-lv">1</span></small>
+                </div>
+                <div class="skill-nav-item">
+                    <button onclick="showTab('alchemy')">Alchemy</button>
+                    <div class="skill-mini-bar"><div id="alchemy-mini-progress"></div></div>
+                    <small>Lv. <span id="alchemy-lv">1</span></small>
+                </div>
+                <div class="skill-nav-item">
+                    <button onclick="showTab('demonology')">Demonology</button>
+                    <div class="skill-mini-bar"><div id="demonology-mini-progress"></div></div>
+                    <small>Lv. <span id="demonology-lv">1</span></small>
+                </div>
+                
+                <div class="menu-label">THE WORLD</div>
+                <button class="nav-btn" onclick="showTab('combat')">Combat (Wilderness)</button>
+                <button class="nav-btn" onclick="showTab('grimoire')">The Grimoire</button>
+                <button class="nav-btn" onclick="showTab('inventory')">Inventory & Gear</button>
+            </nav>
+            
+            <div id="game-log">
+                <h3>Log</h3>
+                <div id="log-entries"></div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main id="main-content">
+            <div id="header-area">
+                <h1 id="tab-title">Dark Arts</h1>
+                <p id="sub-title">Harness the void to increase your power.</p>
+            </div>
+
+        <section id="dark-arts" class="tab-content active">
+            <div class="action-grid">
+                <div class="action-card" id="card-meditate">
+                    <div class="card-header">
+                        <h3>Meditate on the Void</h3>
+                        <span class="mastery-badge">Mastery Lv.<span id="mastery-meditate">1</span></span>
+                    </div>
+                    <p>Draw energy from the ethereal plane. Base duration: 2s.</p>
+                    <div class="reward-line">+<span id="meditate-gain">5</span> Mana</div>
+                    <div class="progress-container"><div id="meditate-progress" class="progress-bar"></div></div>
+                    <button class="action-btn" id="btn-meditate" onclick="handleTaskClick('meditate')">Begin</button>
+                </div>
+                <div class="action-card locked" id="card-shadowbolt">
+                    <div class="card-header">
+                        <h3>Shadow Bolt Training</h3>
+                        <span class="mastery-badge">Mastery Lv.<span id="mastery-shadowbolt">1</span></span>
+                    </div>
+                    <p>Cost: 10 Mana. High XP gain. Base duration: 3.5s.</p>
+                    <div class="progress-container"><div id="shadowbolt-progress" class="progress-bar"></div></div>
+                    <button class="action-btn" id="btn-shadowbolt" onclick="handleTaskClick('shadowbolt')">Begin</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="soul-reaping" class="tab-content">
+            <div class="action-grid">
+                <div class="action-card" id="card-harvest">
+                    <div class="card-header">
+                        <h3>Harvest Graveyard</h3>
+                        <span class="mastery-badge">Mastery Lv.<span id="mastery-harvest">1</span></span>
+                    </div>
+                    <p>Collect souls from the departed. Base duration: 5s.</p>
+                    <div class="progress-container"><div id="harvest-progress" class="progress-bar"></div></div>
+                    <button class="action-btn" id="btn-harvest" onclick="handleTaskClick('harvest')">Begin</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="alchemy" class="tab-content">
+            <div class="action-grid">
+                <div class="action-card" id="card-transmute">
+                    <div class="card-header">
+                        <h3>Transmute Souls</h3>
+                        <span class="mastery-badge">Mastery Lv.<span id="mastery-transmute">1</span></span>
+                    </div>
+                    <p>Convert 5 Souls into Gold. Base duration: 4s.</p>
+                    <div class="progress-container"><div id="transmute-progress" class="progress-bar"></div></div>
+                    <button class="action-btn" id="btn-transmute" onclick="handleTaskClick('transmute')">Begin</button>
+                </div>
+                <div class="action-card locked" id="card-witchsBrew">
+                    <div class="card-header">
+                        <h3>Witch's Brew</h3>
+                        <span class="mastery-badge">Mastery Lv.<span id="mastery-witchsBrew">1</span></span>
+                    </div>
+                    <p>Cost: 2 Souls, 50 Gold. 2x Mana Regen for 60s. Base duration: 6s.</p>
+                    <div class="progress-container"><div id="witchsBrew-progress" class="progress-bar"></div></div>
+                    <button class="action-btn" id="btn-witchsBrew" onclick="handleTaskClick('witchsBrew')">Begin</button>
+                </div>
+            </div>
+        </section>
+
+            <section id="demonology" class="tab-content">
+                <div class="action-grid">
+                    <div class="action-card" id="card-summonImp">
+                        <div class="card-header">
+                            <h3>Summon Lesser Imp</h3>
+                            <span class="mastery-badge">Mastery Lv.<span id="mastery-summonImp">1</span></span>
+                        </div>
+                        <p>Cost: 20 Mana. Imps generate Souls over time. Base duration: 8s.</p>
+                        <div class="progress-container"><div id="summonImp-progress" class="progress-bar"></div></div>
+                        <button class="action-btn" id="btn-summonImp" onclick="handleTaskClick('summonImp')">Begin</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="combat" class="tab-content">
+                <div class="combat-container">
+                    <div class="combat-unit" id="player-unit">
+                        <h3>The Warlock</h3>
+                        <div class="hp-bar-outer"><div id="player-hp-fill" style="width:100%"></div></div>
+                        <p>HP: <span id="player-hp">100</span>/<span id="player-max-hp">100</span></p>
+                    </div>
+                    <div class="combat-vs">VS</div>
+                    <div class="combat-unit" id="enemy-unit">
+                        <h3 id="enemy-name">Inquisitor Scout</h3>
+                        <div class="hp-bar-outer"><div id="enemy-hp-fill" style="width:100%"></div></div>
+                        <p>HP: <span id="enemy-hp">50</span>/<span id="enemy-max-hp">50</span></p>
+                        <p>Damage: <span id="enemy-damage">5</span></p>
+                        <p>Kills: <span id="combat-kills">0</span></p>
+                    </div>
+                </div>
+                <div class="combat-controls">
+                    <button class="action-btn" id="btn-combat" onclick="toggleCombat()">Venture into Wilderness</button>
+                </div>
+            </section>
+
+            <section id="grimoire" class="tab-content">
+                <div class="upgrade-grid">
+                    <div class="upgrade-card" id="upg-quickCasting">
+                        <h4>Quick Casting</h4>
+                        <p>Reduces all task durations by 15%.</p>
+                        <button class="upgrade-btn" onclick="buyUpgrade('quickCasting', 1)">Study (1 Knowledge)</button>
+                    </div>
+                    <div class="upgrade-card" id="upg-manaInfusion">
+                        <h4>Soul Infusion</h4>
+                        <p>Gain +50% Mana from Meditation.</p>
+                        <button class="upgrade-btn" onclick="buyUpgrade('manaInfusion', 2)">Study (2 Knowledge)</button>
+                    </div>
+                    <div class="upgrade-card" id="upg-soulHarvestBoost">
+                        <h4>Soul Harvest Boost</h4>
+                        <p>Harvest Graveyard yields +1 Soul.</p>
+                        <button class="upgrade-btn" onclick="buyUpgrade('soulHarvestBoost', 3)">Study (3 Knowledge)</button>
+                    </div>
+                    <div class="upgrade-card" id="upg-combatEfficiency">
+                        <h4>Combat Efficiency</h4>
+                        <p>Increase combat damage by 20%.</p>
+                        <button class="upgrade-btn" onclick="buyUpgrade('combatEfficiency', 4)">Study (4 Knowledge)</button>
+                    </div>
+                </div>
+                <div class="prestige-section" style="margin-top: 3rem; text-align: center; border-top: 1px solid var(--border-color); padding-top: 2rem;">
+                    <h3>Ritual of Rebirth</h3>
+                    <p>Sacrifice all current progress to increase your permanent Mana Gain multiplier.</p>
+                    <button class="action-btn" style="max-width: 300px; margin: 0 auto; background: #4a0000;" onclick="performRitual()">Perform Ritual (Requires Dark Arts Lv.10)</button>
+                </div>
+            </section>
+
+            <section id="inventory" class="tab-content">
+                <div class="inventory-layout">
+                    <div class="gear-slots">
+                        <div class="slot" id="slot-wand">
+                            <span class="slot-label">Wand:</span> <span class="slot-val" id="equipped-wand">None</span>
+                        </div>
+                        <div class="slot" id="slot-grimoire">
+                            <span class="slot-label">Grimoire:</span> <span class="slot-val" id="equipped-grimoire">None</span>
+                        </div>
+                    </div>
+                    <div class="vault">
+                        <h3>Item Vault</h3>
+                        <div id="inventory-list" class="item-grid">
+                            <!-- Items will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="js/state.js"></script>
+    <script src="js/tasks.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/engine.js"></script>
+</body>
+</html>
