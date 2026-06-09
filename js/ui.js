@@ -117,6 +117,13 @@ function showTab(id) {
     document.getElementById(id).classList.add('active');
 }
 
+function setTheme(theme) {
+    document.body.setAttribute('data-theme', theme);
+    state.settings = state.settings || {};
+    state.settings.theme = theme;
+    saveGame();
+}
+
 function updateUnlocks() {
     Object.values(tasks).forEach(t => {
         const card = document.getElementById(`card-${t.id}`);
@@ -141,6 +148,9 @@ function loadGame() {
     const s = localStorage.getItem('warlock_v1');
     if (s) { Object.assign(state, JSON.parse(s)); updateUI(); updateUnlocks(); }
     
+    // Apply saved theme
+    if (state.settings?.theme) setTheme(state.settings.theme);
+
     const currentTime = Date.now();
     const offlineTimeElapsed = (state.lastSaveTime) ? (currentTime - state.lastSaveTime) : 0;
     if (offlineTimeElapsed > 500) {
