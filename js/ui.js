@@ -61,6 +61,10 @@ function updateUI() {
     getEl('equipped-grimoire').innerText = state.equipment.grimoire ? state.equipment.grimoire.name : 'None';
     updateUnlocks();
 
+    if (getEl('stat-total-gold')) getEl('stat-total-gold').innerText = Math.floor(state.stats?.totalGold || 0);
+    if (getEl('stat-total-souls')) getEl('stat-total-souls').innerText = Math.floor(state.stats?.totalSouls || 0);
+    if (getEl('stat-total-kills')) getEl('stat-total-kills').innerText = state.stats?.totalKills || state.combat.killCount;
+
     const meditateGainEl = getEl('meditate-gain');
     if (meditateGainEl) {
         let gain = (5 + Math.floor(state.skills.darkArts.level / 5)) * state.mastery.meditate;
@@ -138,8 +142,8 @@ function loadGame() {
     if (s) { Object.assign(state, JSON.parse(s)); updateUI(); updateUnlocks(); }
     
     const currentTime = Date.now();
-    const offlineTimeElapsed = currentTime - state.lastSaveTime;
-    if (offlineTimeElapsed > 0) {
+    const offlineTimeElapsed = (state.lastSaveTime) ? (currentTime - state.lastSaveTime) : 0;
+    if (offlineTimeElapsed > 500) {
         log(`Welcome back! Away for ${Math.floor(offlineTimeElapsed / 1000)}s.`);
         
         // Capture resource counts before gameTick

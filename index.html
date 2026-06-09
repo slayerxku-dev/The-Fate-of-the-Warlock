@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Fate of the Warlock | Alpha v0.9</title>
+    <title>The Fate of the Warlock | Alpha v1.0</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -82,7 +82,7 @@
             <canvas id="void-canvas"></canvas>
             <div class="sidebar-header">
                 <div class="orb"></div>
-                <h2>Warlock <span class="version">v0.9</span></h2>
+                <h2>Warlock <span class="version">v1.0</span></h2>
             </div>
             
             <div class="stat-box">
@@ -117,6 +117,11 @@
                     <div class="skill-mini-bar"><div id="demonology-mini-progress"></div></div>
                     <small>Lv. <span id="demonology-lv">1</span></small>
                 </div>
+                <div class="skill-nav-item">
+                    <button onclick="showTab('necromancy')">Necromancy</button>
+                    <div class="skill-mini-bar"><div id="necromancy-mini-progress"></div></div>
+                    <small>Lv. <span id="necromancy-lv">1</span></small>
+                </div>
                 <div class="skill-nav-item" id="nav-hemomancy">
                     <img src="https://images.unsplash.com/photo-1502476722513-3972c39e2402?q=80&w=50&h=50&fit=crop" class="skill-icon-sidebar">
                     <button onclick="showTab('hemomancy')">Hemomancy</button>
@@ -126,6 +131,7 @@
                 
                 <div class="menu-label">THE WORLD</div>
                 <button class="nav-btn" onclick="showTab('combat')">Combat (Wilderness)</button>
+                <button class="nav-btn" onclick="showTab('statistics')">Statistics</button>
                 <button class="nav-btn" onclick="showTab('shop')">The Black Market</button>
                 <button class="nav-btn" onclick="showTab('grimoire')">The Grimoire</button>
                 <button class="nav-btn" onclick="showTab('inventory')">Inventory & Gear</button>
@@ -220,6 +226,49 @@
                 </div>
             </section>
 
+            <section id="hemomancy" class="tab-content">
+                <div class="action-grid">
+                    <div class="action-card" id="card-bloodSiphon">
+                        <div class="card-header">
+                            <h3>Blood Siphon</h3>
+                            <span class="mastery-badge">Mastery Lv.<span id="mastery-bloodSiphon">1</span></span>
+                        </div>
+                        <p>Sacrifice 10 HP for 5 Blood. Base duration: 4s.</p>
+                        <div class="progress-container"><div id="bloodSiphon-progress" class="progress-bar"></div></div>
+                        <button class="action-btn" id="btn-bloodSiphon" onclick="handleTaskClick('bloodSiphon')">Begin</button>
+                    </div>
+                    <div class="action-card" id="card-bloodTithe">
+                        <div class="card-header">
+                            <h3>Blood Tithe</h3>
+                        </div>
+                        <p>Convert 20% current HP into Gold. Base duration: 2s.</p>
+                        <div class="progress-container"><div id="bloodTithe-progress" class="progress-bar"></div></div>
+                        <button class="action-btn" id="btn-bloodTithe" onclick="handleTaskClick('bloodTithe')">Begin</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="necromancy" class="tab-content">
+                <div class="action-grid">
+                    <div class="action-card">
+                        <h3>Raise Skeleton</h3>
+                        <p>Requires 10 Souls. Skeletons provide +3 Combat DPS.</p>
+                        <button class="action-btn" onclick="handleNecromancyClick()">Raise Minion (Cost: 5 Souls)</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="statistics" class="tab-content">
+                <div class="action-grid">
+                    <div class="action-card">
+                        <h3>Lifetime Statistics</h3>
+                        <p>Total Gold Earned: <span id="stat-total-gold">0</span></p>
+                        <p>Total Souls Harvested: <span id="stat-total-souls">0</span></p>
+                        <p>Total Enemies Slain: <span id="stat-total-kills">0</span></p>
+                    </div>
+                </div>
+            </section>
+
             <section id="combat" class="tab-content">
                 <div class="combat-container">
                     <div class="combat-unit" id="player-unit">
@@ -238,7 +287,11 @@
                     </div>
                 </div>
                 <div class="combat-controls">
-                    <button class="action-btn" id="btn-combat" onclick="toggleCombat()">Venture into Wilderness</button>
+                    <button class="action-btn" id="btn-combat" onclick="toggleCombat()">Toggle Combat</button>
+                    <div class="zone-selection" style="margin-top: 10px;">
+                        <button class="nav-btn" onclick="spawnEnemies('wilderness')">Wilderness</button>
+                        <button class="nav-btn" onclick="spawnEnemies('cursedForest')">Cursed Forest</button>
+                    </div>
                 </div>
             </section>
 
