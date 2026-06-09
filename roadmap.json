@@ -105,9 +105,7 @@
             "description": "Content: Add 'Cursed Forest' enemies. Define a new enemy pool that replaces the Inquisitor Scout after 100 total kills, featuring higher HP and specialized drops.",
             "priority": "medium",
             "file": "js/engine.js"
-        }
-    ],
-    "future_tasks": [
+        },
         {
             "id": "TASK-018",
             "description": "Visuals: Add CSS pulsing animations to the Mana bar when it is full or regenerating at high speeds.",
@@ -143,10 +141,28 @@
             "file": "js/engine.js"
         },
         {
+            "id": "TASK-056",
+            "description": "Optimization: Implement UI Batching. Refactor engine.js to only call updateUI() inside a requestAnimationFrame loop, and only if state changes have occurred. This will eliminate stutter on lower-end devices.",
+            "priority": "critical",
+            "file": "js/engine.js"
+        },
+        {
+            "id": "TASK-057",
+            "description": "Visuals: Implement CSS Variables for colors to allow 'Theme Swapping'. Add a 'Dark Mode' and 'High Contrast Occult' mode toggle in settings.",
+            "priority": "medium",
+            "file": "index.html"
+        },
+        {
             "id": "TASK-023",
-            "description": "UI: Add tooltips to all action cards. Hovering over 'Begin' should show a breakdown of current speed and reward multipliers.",
-            "priority": "low",
-            "file": "js/ui.js"
+            "description": "Game: Fix the current issue with Begin bars not making any progress",
+            "priority": "high",
+            "files": [
+                "js/state.js",
+                "js/engine.js",
+                "js/ui.js",
+                "js/game.js",
+                "index.html"
+            ]
         },
         {
             "id": "TASK-024",
@@ -157,7 +173,9 @@
                 "js/engine.js",
                 "js/ui.js"
             ]
-        },
+        }
+    ],
+    "future_tasks": [
         {
             "id": "TASK-025",
             "description": "Visuals: Implement SVG icons for Mana, Souls, and Gold in the sidebar to replace plain text labels.",

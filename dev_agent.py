@@ -4,7 +4,7 @@ import requests
 from datetime import datetime
 import time
 
-PROJECT_PATH = r"d:\Development\The Fate of the Warlock"
+PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 ROADMAP_PATH = os.path.join(PROJECT_PATH, "roadmap.json")
 DEVLOG_PATH = os.path.join(PROJECT_PATH, "devlog.txt")
 
@@ -21,6 +21,9 @@ def create_backup(file_path):
 def is_syntax_valid(code):
     """Perform a basic structural check on the generated JavaScript."""
     if not code or len(code) < 100: return False
+    # Detect AI truncation markers which would result in code loss
+    if "..." in code:
+        return False
     # Basic bracket balancing check
     if code.count('{') != code.count('}') or code.count('(') != code.count(')'):
         return False

@@ -7,17 +7,19 @@ const state = {
         souls: 0,
         gold: 0,
         knowledge: 0,
+        blood: 0,
         imps: 0,
         witchsBrewTimer: 0,
         prestigeMultiplier: 1.0,
-        potions: { haste: 0, might: 0 },
+        potions: { haste: 0, might: 0, health: 5 },
         potionTimers: { haste: 0, might: 0 }
     },
     skills: {
         darkArts: { xp: 0, level: 1, name: "Dark Arts" },
         soulReaping: { xp: 0, level: 1, name: "Soul Reaping" },
         alchemy: { xp: 0, level: 1, name: "Alchemy" },
-        demonology: { xp: 0, level: 1, name: "Demonology" }
+        demonology: { xp: 0, level: 1, name: "Demonology" },
+        hemomancy: { xp: 0, level: 1, name: "Hemomancy" }
     },
     mastery: {
         meditate: 1,
@@ -25,7 +27,9 @@ const state = {
         harvest: 1,
         transmute: 1,
         summonImp: 1,
-        witchsBrew: 1
+        witchsBrew: 1,
+        bloodSiphon: 1,
+        bloodTithe: 1
     },
     upgrades: {
         quickCasting: false,
@@ -45,7 +49,8 @@ const state = {
         combatTickCounter: 0,
         combatTickInterval: 2000
     },
-    inventory: [],
+    enemies: [],
+    inventory: {},
     equipment: {
         wand: null,
         grimoire: null

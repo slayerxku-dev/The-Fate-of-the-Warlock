@@ -7,23 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #e0d8c3;
-            --secondary-color: #b39b5c;
-            --background-color: #1a1a25;
-            --text-color: #e0d8c3;
-            --border-color: #4a3b2a;
-        }
-
-        /* Glassmorphism Effect */
-        .action-card, .upgrade-card, .stat-box, .sidebar-header, #game-log {
-            background: rgba(255, 255, 255, 0.03) !important;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(224, 216, 195, 0.1) !important;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-
+        /* Smooth transitions for UI responsiveness */
         .progress-bar { transition: width 0.1s linear; }
         .tab-content { display: none; opacity: 0; transition: opacity 0.3s ease; }
         .tab-content.active { display: block; opacity: 1; }
@@ -33,8 +17,8 @@
             position: fixed;
             padding: 10px;
             background: rgba(20, 20, 25, 0.95);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
+            border: 1px solid #4a3b2a;
+            color: #e0d8c3;
             font-family: 'Inter', sans-serif;
             font-size: 0.85rem;
             pointer-events: none;
@@ -43,43 +27,15 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             border-radius: 4px;
         }
-        .tooltip-title { font-family: 'Cinzel'; color: var(--secondary-color); margin-bottom: 5px; display: block; font-weight: bold; }
+        .tooltip-title { font-family: 'Cinzel'; color: #b39b5c; margin-bottom: 5px; display: block; font-weight: bold; }
         .multiplier-line { display: flex; justify-content: space-between; gap: 20px; margin: 2px 0; }
         .mult-val { color: #8a2be2; }
-
-        /* Dark Mode and High Contrast Occult */
-        body[data-theme="dark"] {
-            --primary-color: #333;
-            --secondary-color: #555;
-            --background-color: #111;
-            --text-color: #fff;
-            --border-color: #4a3b2a;
-        }
-        body[data-theme="high-contrast"] {
-            --primary-color: #000;
-            --secondary-color: #fff;
-            --background-color: #fff;
-            --text-color: #000;
-            --border-color: #000;
-        }
-
-        #sidebar { position: relative; z-index: 1; }
-        #void-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
-        }
     </style>
 </head>
-<body data-theme="light">
+<body>
     <div id="global-tooltip"></div>
     <div id="game-container">
         <aside id="sidebar">
-            <canvas id="void-canvas"></canvas>
             <div class="sidebar-header">
                 <div class="orb"></div>
                 <h2>Warlock <span class="version">v0.9</span></h2>
@@ -116,12 +72,6 @@
                     <button onclick="showTab('demonology')">Demonology</button>
                     <div class="skill-mini-bar"><div id="demonology-mini-progress"></div></div>
                     <small>Lv. <span id="demonology-lv">1</span></small>
-                </div>
-                <div class="skill-nav-item" id="nav-hemomancy">
-                    <img src="https://images.unsplash.com/photo-1502476722513-3972c39e2402?q=80&w=50&h=50&fit=crop" class="skill-icon-sidebar">
-                    <button onclick="showTab('hemomancy')">Hemomancy</button>
-                    <div class="skill-mini-bar"><div id="hemomancy-mini-progress"></div></div>
-                    <small>Lv. <span id="hemomancy-lv">1</span></small>
                 </div>
                 
                 <div class="menu-label">THE WORLD</div>

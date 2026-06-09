@@ -1,33 +1,22 @@
 // --- ENGINE & LOGIC ---
 const XP_BASE = 100;
 const XP_MULTIPLIER = 1.18;
-const MASTERY_CHANCE = 0.12;
 const MANA_REGEN_BASE = 0.02;
 const COMBAT_PLAYER_BASE_DAMAGE = 5;
 const COMBAT_GOLD_REWARD = 10;
 const COMBAT_XP_REWARD = 50;
 
-const ZONES_DATA = {
-    wilderness: { name: "Wilderness", requiredKills: 0, enemyStats: { hp: 20, damage: 3 } },
-    cursedForest: { name: "Cursed Forest", requiredKills: 50, enemyStats: { hp: 40, damage: 5 } },
-    crypt: { name: "Crypt", requiredKills: 150, enemyStats: { hp: 60, damage: 7 } }
-};
-
 const UPGRADES_DATA = {
     quickCasting: { name: "Quick Casting", cost: 1 },
     manaInfusion: { name: "Mana Infusion", cost: 2 },
     soulHarvestBoost: { name: "Soul Harvest Boost", cost: 3 },
-    combatEfficiency: { name: "Combat Efficiency", cost: 4 }
+    combatEfficiency: { name: "Combat Efficiency", cost: 4 },
+    necromancy: { name: "Necromancy", cost: 5 } // New Necromancy upgrade
 };
 
 const ITEMS_DATA = {
     basicWand: { id: 'basicWand', name: 'Basic Wand', type: 'wand', damageBonus: 2 },
     tatteredGrimoire: { id: 'tatteredGrimoire', name: 'Tattered Grimoire', type: 'grimoire', manaRegenBonus: 0.05 }
-};
-
-const BLOOD_MAGIC_DATA = {
-    blood: { name: "Blood", initialAmount: 0 },
-    hemomancy: { name: "Hemomancy", level: 1, xp: 0 }
 };
 
 const TASKS_DATA = {
@@ -36,21 +25,68 @@ const TASKS_DATA = {
         duration: 4,
         cost: 10,
         reward: { blood: 5, hemomancyXp: 5 },
-        requirement: () => state.resources.health > 10
+        requirement: () => state.combat.playerHp > 10
+    },
+    bloodTithe: {
+        name: "Blood Tithe",
+        duration: 2,
+        cost: 0,
+        reward: (state) => {
+            const goldReward = Math.floor(state.combat.playerHp * 0.2);
+            state.resources.gold += goldReward;
+            gainXP('hemomancy', TASKS_DATA.bloodTithe.reward.hemomancyXp);
+        },
+        requirement: () => state.combat.playerHp > 0
     }
 };
+
+function getXPForLevel(lv) { 
+    return Math.floor(XP_BASE * Math.pow(XP_MULTIPLIER, lv - 1)); 
+}
+
+function gainXP(skillId, amount) {
+    const skill = state.skills[skillId];
+    if (!skill) return;
+    skill.xp += amount * (state.resources.prestigeMultiplier || 1);
+    while (skill.xp >= getXPForLevel(skill.level + 1)) {
+        skill.level++;
+        log(`${skill.name} reached level ${skill.level}!`);
+        if (typeof showToast === 'function') showToast(`${skill.name} Level ${skill.level}!`);
+        checkMilestones(skillId, skill.level);
+    }
+}
+
+function calculateManaRegen() {
+    let regen = MANA_REGEN_BASE;
+    if (state.resources.witchsBrewTimer > 0) regen *= 2;
+    if (state.equipment.grimoire) regen += (state.equipment.grimoire.manaRegenBonus || 0);
+    return regen;
+}
+
+function checkMilestones(skillId, level) {
+    if (skillId === 'darkArts' && level === 10) {
+        state.resources.maxMana += 20;
+        log("Milestone: Dark Arts Lv10! +20 Max Mana.");
+    } else if (skillId === 'soulReaping' && level === 10) {
+        log("Milestone: Soul Reaping Lv10! Soul harvesting is now more efficient.");
+    } else if (skillId === 'alchemy' && level === 10) {
+        log("Milestone: Alchemy Lv10! Potions now last longer.");
+    }
+}
 
 const MANA_CRYSTAL_DATA = {
     manaCrystal: { name: "Mana Crystal", effect: (state) => { state.resources.maxMana += 5 } }
 };
 
 function gainManaCrystal() {
-    if (Math.random() < 0.02 && state.activeTask === 'shadowBoltTraining') {
+    if (Math.random() < 0.02 && state.activeTask === 'shadowbolt') {
         const crystal = MANA_CRYSTAL_DATA.manaCrystal;
         crystal.effect(state);
         log(`You gained a Mana Crystal! +5 Max Mana`);
     }
 }
+
+let lastStateHash = null;
 
 function gameTick(timeElapsed) {
     if (state.activeTask) {
@@ -65,7 +101,7 @@ function gameTick(timeElapsed) {
         }
         if (state.upgrades.quickCasting) taskSpeedMultiplier *= 1.15;
 
-        state.currentTaskProgress += (100 / task.duration) * taskSpeedMultiplier * timeElapsed;
+        state.currentTaskProgress += (100 / task.duration) * taskSpeedMultiplier * (timeElapsed / 1000);
         while (state.currentTaskProgress >= 100) {
             state.currentTaskProgress -= 100; task.onComplete();
             if (task.requirement && !task.requirement()) { stopTask(); break; }
@@ -97,12 +133,17 @@ function gameTick(timeElapsed) {
                 const scalingFactor = Math.floor(state.combat.killCount / 10);
                 const multiplier = 1 + (scalingFactor * 0.1);
                 
-                state.combat.enemyMaxHp *= multiplier;
-                state.combat.enemyDamage *= multiplier;
+                state.combat.enemyMaxHp = 50 * multiplier;
+                state.combat.enemyDamage = 5 * multiplier;
                 state.combat.enemyHp = state.combat.enemyMaxHp;
                 
                 state.resources.gold += Math.floor(COMBAT_GOLD_REWARD * multiplier);
                 gainXP('darkArts', Math.floor(COMBAT_XP_REWARD * multiplier));
+
+                // Kill Rewards (Blood Magic)
+                const bloodReward = Math.floor(Math.random() * 3) + 1;
+                state.resources.blood += bloodReward;
+                gainXP('hemomancy', 5);
             }
             if (state.combat.playerHp <= 0) { state.combat.playerHp = state.combat.playerMaxHp; state.combat.isFighting = false; toggleCombat(); }
         }
@@ -110,20 +151,90 @@ function gameTick(timeElapsed) {
 
     state.resources.manaRegenRate = calculateManaRegen();
     state.resources.mana = Math.min(state.resources.maxMana, state.resources.mana + (state.resources.manaRegenRate * timeElapsed / 1000));
-    
-    // Blood Magic
-    if (state.combat.isFighting && state.combat.enemyHp <= 0) {
-        const bloodReward = Math.floor(Math.random() * 3) + 1;
-        state.resources.blood += bloodReward;
-        gainXP('hemomancy', TASKS_DATA.bloodSiphon.reward.hemomancyXp);
-    }
 
     // Auto-Eat Logic
-    if (state.combat.isFighting && state.playerHp <= state.playerMaxHp * 0.2) {
-        usePotion('Health Potion');
+    if (state.combat.isFighting && state.combat.playerHp <= state.combat.playerMaxHp * 0.2) {
+        usePotion('health');
+        updateUI();
     }
-    
+
+    impResearchTick(timeElapsed);
     gainManaCrystal();
+}
+
+function hashState(state) {
+    // Include resources in the hash so UI updates when mana/progress changes
+    return JSON.stringify({ r: state.resources, t: state.activeTask, p: state.currentTaskProgress, c: state.combat });
+}
+
+let lastFrameTime = null;
+
+function animate(currentTime) {
+    if (!lastFrameTime) {
+        lastFrameTime = currentTime;
+        requestAnimationFrame(animate);
+        return;
+    }
+
+    const timeElapsed = currentTime - lastFrameTime;
+    gameTick(timeElapsed);
+
+    if (hashState(state) !== lastStateHash) {
+        updateUI();
+        lastStateHash = hashState(state);
+    }
+
+    lastFrameTime = currentTime;
+    requestAnimationFrame(animate);
+}
+
+requestAnimationFrame(animate);
+
+// --- IMP RESEARCH ---
+function impResearchTick() {
+    if (state.resources.imps > 0 && Math.random() < (0.0167 * (state.updateInterval / 1000))) {
+        state.resources.knowledge += 1;
+        log(`Imp generated 1 Knowledge point!`);
+    }
+}
+
+function stopTask() {
+    if (state.activeTask) {
+        const bar = document.getElementById(`${state.activeTask}-progress`);
+        if (bar) bar.style.width = '0%';
+    }
+    state.activeTask = null;
+    state.currentTaskProgress = 0;
+    updateUI();
+}
+
+function toggleCombat() {
+    state.combat.isFighting = !state.combat.isFighting;
+    if (state.combat.isFighting) spawnEnemies('wilderness');
+    updateUI();
+}
+
+function buyPotion(type, cost) {
+    if (state.resources.gold >= cost) {
+        state.resources.gold -= cost;
+        state.resources.potions[type]++;
+        log(`Bought Potion of ${type}.`);
+        updateUI();
+    } else {
+        log("Not enough gold!");
+    }
+}
+
+function usePotion(type) {
+    if (state.resources.potions[type] > 0) {
+        state.resources.potions[type]--;
+        if (type === 'health') {
+            state.combat.playerHp = Math.min(state.combat.playerMaxHp, state.combat.playerHp + 50);
+        } else {
+            state.resources.potionTimers[type] = 300000; // 5 mins
+        }
+        log(`Used ${type} potion.`);
+    }
 }
 
 // --- SOUL FORGING ---
@@ -149,26 +260,28 @@ function upgradeBasicWand() {
     }
 }
 
-// Add a new tab for Soul Forging
-function createSoulForgingTab() {
-    const tab = document.createElement('div');
-    tab.id = 'soulForging';
-    tab.className = 'tab-content';
+// --- NECROMANCY ---
+const NECROMANCY_DATA = {
+    raiseSkeleton: { 
+        name: "Raise Skeleton",
+        cost: 5,
+        reward: { skeletonId: 'skeleton', damageBonus: 3 },
+        requirement: () => state.resources.souls >= 10
+    }
+};
 
-    const title = document.createElement('h2');
-    title.textContent = 'Soul Forging';
-    tab.appendChild(title);
-
-    const upgradeButton = document.createElement('button');
-    upgradeButton.textContent = 'Upgrade Basic Wand to Acolyte Rod';
-    upgradeButton.onclick = upgradeBasicWand;
-    tab.appendChild(upgradeButton);
-
-    return tab;
+function handleNecromancyClick() {
+    if (state.resources.souls >= NECROMANCY_DATA.raiseSkeleton.cost) {
+        state.resources.souls -= NECROMANCY_DATA.raiseSkeleton.cost;
+        
+        const skeleton = { id: 'skeleton', name: 'Skeleton', type: 'minion', damageBonus: NECROMANCY_DATA.raiseSkeleton.reward.damageBonus };
+        state.inventory[skeleton.id] = (state.inventory[skeleton.id] || 0) + 1;
+        
+        log(`You raised a Skeleton!`);
+    } else {
+        log('Not enough Souls to raise a Skeleton.');
+    }
 }
-
-// Add the Soul Forging tab to the UI
-document.getElementById('tabs').appendChild(createSoulForgingTab());
 
 // --- ENEMIES ---
 const ENEMY_POOLS = {
@@ -181,45 +294,103 @@ function getEnemyPool(zone) {
 }
 
 function spawnEnemies(zone) {
-    const pool = getEnemyPool(zone);
-    for (let i = 0; i < pool.enemies.length; i++) {
-        const enemyType = pool.enemies[i];
-        let enemyStats;
-        switch (enemyType) {
-            case 'Inquisitor Scout':
-                enemyStats = { hp: 20, damage: 3 };
-                break;
-            case 'Cursed Beast':
-                enemyStats = { hp: 45, damage: 6 };
-                break;
-            case 'Wraith':
-                enemyStats = { hp: 30, damage: 5 };
-                break;
-        }
-        const enemy = createEnemy(enemyStats);
-        state.enemies.push(enemy);
-    }
-}
+    const pool = ENEMY_POOLS[zone] || ENEMY_POOLS.wilderness;
+    // Pick a random enemy from the pool
+    const enemyType = pool.enemies[Math.floor(Math.random() * pool.enemies.length)];
+    
+    const scalingFactor = Math.floor(state.combat.killCount / 10);
+    const mult = 1 + (scalingFactor * 0.1);
 
-function createEnemy(stats) {
-    return {
-        hp: stats.hp,
-        maxHp: stats.hp,
-        damage: stats.damage,
-        isAlive: true
+    // Define base stats if not present in a global lookup
+    const statsMap = {
+        'Inquisitor Scout': { hp: 20, damage: 3 },
+        'Cursed Beast': { hp: 45, damage: 6 },
+        'Wraith': { hp: 30, damage: 5 }
     };
+
+    const base = statsMap[enemyType] || { hp: 20, damage: 3 };
+    
+    state.combat.enemyMaxHp = Math.floor(base.hp * mult);
+    state.combat.enemyHp = state.combat.enemyMaxHp;
+    state.combat.enemyDamage = Math.floor(base.damage * mult);
+    state.combat.enemyName = enemyType;
 }
 
-// --- ZONE TRANSITION ---
-function transitionToZone(zone) {
-    const zoneData = ZONES_DATA[zone];
-    if (zoneData.requiredKills <= state.combat.killCount) {
-        spawnEnemies(zone);
-        document.getElementById('current-zone').textContent = `Current Zone: ${zoneData.name}`;
+function handleTaskClick(taskId) {
+    if (state.activeTask === taskId) {
+        stopTask();
     } else {
-        log(`You need to kill ${zoneData.requiredKills} enemies in the Wilderness before moving to the Cursed Forest.`);
+        // Check requirements before starting
+        const task = tasks[taskId];
+        if (task && task.requirement && !task.requirement()) {
+            log(`Cannot start ${task.id}: Requirements not met.`);
+            return;
+        }
+        state.activeTask = taskId;
+        state.currentTaskProgress = 0;
+        log(`Started: ${taskId}`);
+    }
+    updateUI();
+}
+
+// --- WARLOCK APPRENTICE MINI-BOSSES ---
+const MINIBOSS_DATA = {
+    warlockApprentice: { 
+        name: "Warlock Apprentice",
+        hp: 100,
+        damage: 15,
+        requiredKills: 50,
+        reward: { item: 'etherealThread', amount: 1 }
+    }
+};
+
+function checkForMiniBoss() {
+    if (state.combat.killCount > 0 && state.combat.killCount % MINIBOSS_DATA.warlockApprentice.requiredKills === 0) {
+        const boss = MINIBOSS_DATA.warlockApprentice;
+        state.combat.enemyName = boss.name;
+        state.combat.enemyMaxHp = boss.hp;
+        state.combat.enemyHp = boss.hp;
+        state.combat.enemyDamage = boss.damage;
+        log(`A Warlock Apprentice appears!`);
     }
 }
 
-// --- SUMMARY ---
-// The code has been updated to include new enemies for the 'Cursed Forest' zone, a new enemy pool that replaces the 'Inquisitor Scout' after 100 total kills, featuring higher HP and specialized drops. Additionally, functions have been added to handle enemy spawning based on the current zone and transitioning between zones.
+function incrementMastery(id) {
+    if (state.mastery[id]) {
+        state.mastery[id] = Number((state.mastery[id] + 0.01).toFixed(3));
+        if (state.mastery[id] > 1.5) state.mastery[id] = 1.5;
+    }
+}
+
+function buyUpgrade(id, cost) {
+    if (!state.upgrades[id] && state.resources.knowledge >= cost) {
+        state.resources.knowledge -= cost;
+        state.upgrades[id] = true;
+        const card = document.getElementById(`upg-${id}`);
+        if (card) card.classList.add('purchased');
+        log(`Researched ${UPGRADES_DATA[id].name}.`);
+        updateUI();
+    } else {
+        log("Not enough Knowledge to research this upgrade.");
+    }
+}
+
+function performRitual() {
+    if (state.skills.darkArts.level >= 10) {
+        const multiplierAdd = (state.skills.darkArts.level * 0.1);
+        state.resources.prestigeMultiplier += multiplierAdd;
+        
+        // Reset progress but keep prestige and some essentials
+        state.resources.mana = 10;
+        state.resources.gold = 0;
+        state.resources.souls = 0;
+        state.combat.killCount = 0;
+        Object.keys(state.skills).forEach(s => { state.skills[s].level = 1; state.skills[s].xp = 0; });
+        
+        log(`Ritual complete! Prestige Multiplier is now x${state.resources.prestigeMultiplier.toFixed(2)}`);
+        saveGame();
+        location.reload();
+    } else {
+        log("You need Dark Arts level 10 to perform the ritual.");
+    }
+}
